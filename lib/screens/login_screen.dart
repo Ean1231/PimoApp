@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:pimoapp/screens/home_screen.dart';
 
+
+
+// ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
+  Color customColor = Color(0xFF3CB371);
   LoginScreen({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
-  bool _passwordVisible = false;
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final _formKey = GlobalKey<FormState>();
   bool _passwordVisible = false;
-
+    Color customColor = Color(0xFF3CB371);
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -36,9 +39,11 @@ class _LoginScreenState extends State<LoginScreen> {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color.fromRGBO(63, 63, 157, 1),
-            Color.fromRGBO(90, 70, 178, 1),
+            Color.fromARGB(255, 52, 148, 44),
+            Color.fromARGB(255, 52, 148, 44),
           ],
+            //      Color.fromRGBO(63, 63, 157, 1),
+            // Color.fromRGBO(90, 70, 178, 1),
         ),
       ),
       width: double.infinity,
@@ -74,12 +79,12 @@ class _LoginScreenState extends State<LoginScreen> {
   Column loginForm(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 250),
+        const SizedBox(height: 260),
         Container(
           padding: const EdgeInsets.all(20),
-          margin: const EdgeInsets.symmetric(horizontal: 30),
+          margin: const EdgeInsets.symmetric(horizontal: 15),
           width: double.infinity,
-          height: 350,
+          height: 400,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(25),
@@ -96,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
-                  SizedBox(height: 20),
+                  SizedBox(height: 30),
                   Text(
                     'Login',
                     style: Theme.of(context).textTheme.headline6,
@@ -121,13 +126,13 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null; // Return null if the email is valid
                           },
                           autocorrect: false,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.deepPurple),
+                              borderSide: BorderSide(color: Color.fromARGB(255, 52, 148, 44)),
                             ),
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: Colors.deepPurple,
+                                color: Color.fromARGB(255, 52, 148, 44),
                                 width: 2,
                               ),
                             ),
@@ -136,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             prefixIcon: Icon(Icons.alternate_email_rounded),
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 20),
                         TextFormField(
                           validator: (value) {
                             if (value == null || value.isEmpty) {
@@ -158,12 +163,11 @@ class _LoginScreenState extends State<LoginScreen> {
                           autocorrect: false,
                           decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Colors.deepPurple),
+                              borderSide: BorderSide(color: Color.fromARGB(255, 52, 148, 44)),
                             ),
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: Colors.deepPurple,
-                                width: 2,
+                                color: Color.fromARGB(255, 52, 148, 44)
                               ),
                             ),
                             hintText: '*******',
@@ -196,10 +200,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                           Text('Form is valid. Submitting...'),
                                     ),
                                   );
+                                    Navigator.push(context,
+                                    MaterialPageRoute(builder: (context) => HomePage()),
+                                 );
                                 }
                               },
                               child: Text('Login'),
-                              color: Colors.deepPurple,
+                              color: Color.fromARGB(255, 52, 148, 44),
+                              textColor: Color.fromARGB(255, 251, 252, 250),
                             ),
                           ],
                         ),
