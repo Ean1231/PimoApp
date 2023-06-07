@@ -1,20 +1,39 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pimoapp/screens/home_screen.dart';
-
-
+import 'package:pimoapp/backend_api/api_service.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
   Color customColor = Color(0xFF3CB371);
   LoginScreen({Key? key}) : super(key: key);
   final _formKey = GlobalKey<FormState>();
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void authenticateUser() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+    var success = await APIService.authenticateUser(email, password);
+    if (success) {
+      // Authentication successful
+      print('Login successful');
+    } else {
+      // Authentication failed
+      print('Login failed');
+    }
+  }
+
   bool _passwordVisible = false;
-    Color customColor = Color(0xFF3CB371);
+  Color customColor = Color(0xFF3CB371);
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -42,8 +61,8 @@ class _LoginScreenState extends State<LoginScreen> {
             Color.fromARGB(255, 52, 148, 44),
             Color.fromARGB(255, 52, 148, 44),
           ],
-            //      Color.fromRGBO(63, 63, 157, 1),
-            // Color.fromRGBO(90, 70, 178, 1),
+          //      Color.fromRGBO(63, 63, 157, 1),
+          // Color.fromRGBO(90, 70, 178, 1),
         ),
       ),
       width: double.infinity,
@@ -125,10 +144,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
                             return null; // Return null if the email is valid
                           },
+                          controller: emailController,
                           autocorrect: false,
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color.fromARGB(255, 52, 148, 44)),
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 52, 148, 44)),
                             ),
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
@@ -163,12 +184,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           autocorrect: false,
                           decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Color.fromARGB(255, 52, 148, 44)),
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 52, 148, 44)),
                             ),
                             focusedBorder: UnderlineInputBorder(
                               borderSide: BorderSide(
-                                color: Color.fromARGB(255, 52, 148, 44)
-                              ),
+                                  color: Color.fromARGB(255, 52, 148, 44)),
                             ),
                             hintText: '*******',
                             labelText: 'Password',
@@ -194,15 +215,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             MaterialButton(
                               onPressed: () {
                                 if (widget._formKey.currentState!.validate()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                  /* ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content:
                                           Text('Form is valid. Submitting...'),
                                     ),
+                                  ); */
+                                  authenticateUser();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage()),
                                   );
-                                    Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) => HomePage()),
-                                 );
                                 }
                               },
                               child: Text('Login'),

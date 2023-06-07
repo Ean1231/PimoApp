@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class ProfileScreen extends StatelessWidget {
-   ProfileScreen({super.key});
+  ProfileScreen({super.key});
   Color customColor = Color(0xFF3CB371);
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: AppBar(
         title: Text('User Profile'),
@@ -20,8 +19,7 @@ class ProfileScreen extends StatelessWidget {
           children: <Widget>[
             CircleAvatar(
               radius: 70,
-              backgroundImage: AssetImage('images/profle.png'),
-              
+              backgroundImage: AssetImage('images/profile.png'),
             ),
             SizedBox(height: 16.0),
             Text(
