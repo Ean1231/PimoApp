@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pimoapp/screens/userprofile.dart';
 import 'package:pimoapp/screens/login_screen.dart';
+import 'package:pimoapp/screens/checklist2.dart';
 void main() {
   runApp(MyApp());
 }
@@ -51,6 +52,16 @@ class HomePage extends StatelessWidget {
                  Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => ProfileScreen()),
+            );
+              },
+            ),
+               ListTile(
+              title: Text('Inspection'),
+              onTap: () {
+                // Handle menu item 1 tap
+                 Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => QuizPage2()),
             );
               },
             ),

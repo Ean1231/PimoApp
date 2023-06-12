@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:pimoapp/screens/login_screen.dart';
 import 'package:pimoapp/screens/home_screen.dart';
+import 'package:pimoapp/screens/inspection.dart';
+import 'package:pimoapp/screens/checklist2.dart';
+
 // import 'package:pimoapp/screens/userprofile.dart';
 void main() {
   runApp( MyApp());
@@ -14,9 +17,9 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
      title: "App",
      routes: {
-      'home' : (_) => LoginScreen(),
+      'inspect' : (_) => HomePage(),
      },
-     initialRoute: 'home',
+     initialRoute: 'inspect',
   );
  
  }

@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:pimoapp/screens/home_screen.dart';
 import 'package:pimoapp/backend_api/api_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+import 'package:pimoapp/backend_api/api_service.dart';
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
@@ -23,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
     String password = passwordController.text;
 
     var success = await APIService.authenticateUser(email, password);
+
     if (success) {
       // Authentication successful
       print('Login successful');
@@ -145,6 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null; // Return null if the email is valid
                           },
                           controller: emailController,
+                          controller: emailController,
                           autocorrect: false,
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
@@ -181,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null; // Return null if the password is valid
                           },
                           obscureText: !_passwordVisible,
+                          controller: passwordController,
                           autocorrect: false,
                           decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
@@ -215,13 +221,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             MaterialButton(
                               onPressed: () {
                                 if (widget._formKey.currentState!.validate()) {
-                                  /* ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text('Form is valid. Submitting...'),
-                                    ),
-                                  ); */
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //   SnackBar(
+                                  //     content:
+                                  //         Text('Form is valid. Submitting...'),
+                                  //   ),
+                                  // );
+
                                   authenticateUser();
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage()),
+                                  );
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

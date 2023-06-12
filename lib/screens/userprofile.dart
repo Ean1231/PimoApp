@@ -14,7 +14,7 @@ class ProfileScreen extends StatelessWidget {
       ),
       body: Container(
         padding: EdgeInsets.all(16.0),
-        child: const Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             CircleAvatar(
