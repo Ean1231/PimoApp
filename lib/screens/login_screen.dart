@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pimoapp/screens/home_screen.dart';
-
-
+import 'package:pimoapp/backend_api/api_service.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
 
 // ignore: must_be_immutable
 class LoginScreen extends StatefulWidget {
@@ -13,6 +14,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+    final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  void authenticateUser() async {
+    String email = emailController.text;
+    String password = passwordController.text;
+
+   var success = await APIService.authenticateUser(email, password);
+
+    if (success) {
+      // Authentication successful
+      print('Login successful');
+    } else {
+      // Authentication failed
+      print('Login failed');
+    }
+  }
+
   bool _passwordVisible = false;
     Color customColor = Color(0xFF3CB371);
   @override
@@ -125,6 +144,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
                             return null; // Return null if the email is valid
                           },
+                           controller: emailController,
                           autocorrect: false,
                           decoration: const InputDecoration(
                             enabledBorder: UnderlineInputBorder(
@@ -160,6 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null; // Return null if the password is valid
                           },
                           obscureText: !_passwordVisible,
+                         controller: passwordController,
                           autocorrect: false,
                           decoration: InputDecoration(
                             enabledBorder: UnderlineInputBorder(
@@ -194,15 +215,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             MaterialButton(
                               onPressed: () {
                                 if (widget._formKey.currentState!.validate()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content:
-                                          Text('Form is valid. Submitting...'),
-                                    ),
-                                  );
-                                    Navigator.push(context,
+                                  // ScaffoldMessenger.of(context).showSnackBar(
+                                  //   SnackBar(
+                                  //     content:
+                                  //         Text('Form is valid. Submitting...'),
+                                  //   ),
+                                  // );
+
+                                 authenticateUser();
+                                  Navigator.push(
+                                    context,
                                     MaterialPageRoute(builder: (context) => HomePage()),
-                                 );
+                                  );
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()),);
+
                                 }
                               },
                               child: Text('Login'),
