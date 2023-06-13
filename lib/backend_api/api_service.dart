@@ -10,14 +10,13 @@ class APIService {
     //String baseUrl = "https://localhost:7147/api";
 
     var url = Uri.parse(
-        'https://localhost:7147/api/controller/user/AuthenticateUserByEmail');
+        'https://pimoesriapi.azurewebsites.net/api/controller/user/AuthenticateUserByEmail');
 
     // Prepare the login request body
     var requestBody = {
       "login": "",
       "UserID": 0,
       "UserName": "string",
-      "PasswordHash": userPassword,
       "UserPassword": userPassword,
       "UserDescription": "string",
       "UserEmail": userEmail,

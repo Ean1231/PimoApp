@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-
 class SignaturePage extends StatefulWidget {
   @override
   _SignaturePageState createState() => _SignaturePageState();
@@ -48,7 +47,9 @@ class _SignaturePageState extends State<SignaturePage> {
       ..strokeCap = StrokeCap.round;
 
     for (var i = 0; i < _points.length - 1; i++) {
-      canvas.drawLine(_points[i]!, _points[i + 1]!, paint);
+      if (_points[i] != null && _points[i + 1] != null) {
+        canvas.drawLine(_points[i]!, _points[i + 1]!, paint);
+      }
     }
 
     final picture = recorder.endRecording();
@@ -56,7 +57,6 @@ class _SignaturePageState extends State<SignaturePage> {
     final byteData = await image.toByteData(format: ImageByteFormat.png);
     return byteData?.buffer.asUint8List();
   }
-  
 
   void _saveSignature() async {
     final signatureData = await _captureSignature();
@@ -82,8 +82,7 @@ class _SignaturePageState extends State<SignaturePage> {
               'Inspector name: Ean Bosman',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
-            
-             Text(
+            Text(
               'Occupation: Bosman',
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
@@ -96,18 +95,16 @@ class _SignaturePageState extends State<SignaturePage> {
             ),
             SizedBox(height: 16.0),
             Text(
-              'inspection Date: $_currentDate',
+              'Inspection Date: $_currentDate',
               style: TextStyle(fontSize: 16.0),
             ),
             SizedBox(height: 8.0),
             Text(
-              'Inspection completed time: $_currentTime',
+              'Inspection Completed Time: $_currentTime',
               style: TextStyle(fontSize: 16.0),
             ),
-            
             SizedBox(height: 16.0),
-            Align(
-              alignment: Alignment.topCenter,
+            Expanded(
               child: GestureDetector(
                 onPanDown: (details) {
                   setState(() {
@@ -144,7 +141,6 @@ class _SignaturePageState extends State<SignaturePage> {
                   ),
                   child: CustomPaint(
                     painter: SignaturePainter(points: _points),
-                    size: Size.infinite,
                   ),
                 ),
               ),
@@ -189,7 +185,6 @@ class SignaturePainter extends CustomPainter {
       }
     }
   }
-
 
   @override
   bool shouldRepaint(SignaturePainter oldDelegate) {

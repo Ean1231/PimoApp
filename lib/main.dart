@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
      title: "App",
      routes: {
-      'inspect' : (_) => HomePage(),
+      'inspect' : (_) => LoginScreen(),
      },
      initialRoute: 'inspect',
   );
