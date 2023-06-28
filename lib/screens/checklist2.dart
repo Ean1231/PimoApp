@@ -1,43 +1,55 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:pimoapp/screens/inspection.dart';
 import 'package:pimoapp/screens/userprofile.dart';
-import 'package:pimoapp/screens/checklist2.dart';
-import 'package:pimoapp/screens/login_screen.dart';
-import 'package:pimoapp/screens/home_screen.dart';
+import 'package:pimoapp/backend_api/api_service.dart';
+
+import 'home_screen.dart';
 
 class QuizPage2 extends StatefulWidget {
+   final String email;
+  final String displayName;
+  int manageID;
+       Position? currentPosition;
+  String? currentAddress;
+  String currentDate = '';
+  QuizPage2({required this.manageID ,required this.email, required this.displayName, required this.currentPosition, required this.currentAddress,required this.currentDate});
+
   @override
   _QuizPage2State createState() => _QuizPage2State();
 }
 
 class _QuizPage2State extends State<QuizPage2> {
   int _selectedIndex = 1;
+  final APIService apiService = APIService();
+
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
 
-    // Perform specific actions based on the selected index
+
+    
     switch (index) {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => MyHomePage()),
+          MaterialPageRoute(builder: (context) => MyHomePage(email: widget.email, displayName: widget.displayName, manageID: widget.manageID)),
         );
         break;
       case 1:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => QuizPage2()),
+          MaterialPageRoute(builder: (context) => QuizPage2(displayName: widget.displayName, email: widget.email, manageID: widget.manageID, currentAddress: widget.currentAddress, currentDate: widget.currentDate, currentPosition: widget.currentPosition,)),
         );
         break;
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ProfileScreen()),
+          MaterialPageRoute(builder: (context) => ProfileScreen(displayName: widget.displayName, email: widget.email, manageID: widget.manageID)),
         );
         break;
     }
@@ -48,30 +60,35 @@ class _QuizPage2State extends State<QuizPage2> {
 
   final List<String?> _selectedOptions = [];
   TextEditingController _textFieldController = TextEditingController();
-  List<File?> _capturedImages = List.filled(3, null);
+  List<List<File?>> _capturedImages = List.generate(5, (_) => List.filled(3, null));
 
   final List<Map<String, dynamic>> _quizData = [
     {
       'subelement': '5.1 External Walls and Wall Finishes',
       'options': ['C1 (Very Poor)', 'C2 (Poor)', 'C3 (Fair)', 'C4 (Good)', 'C5 (Excellent)'],
+      'imageIndexes': [0, 1, 2],
     },
     {
       'subelement': '5.2 External Doors',
       'options': ['C1 (Very Poor)', 'C2 (Poor)', 'C3 (Fair)', 'C4 (Good)', 'C5 (Excellent)'],
+      'imageIndexes': [3, 4, 5],
     },
     {
       'subelement': '5.3 External Windows',
       'options': ['C1 (Very Poor)', 'C2 (Poor)', 'C3 (Fair)', 'C4 (Good)', 'C5 (Excellent)'],
+      'imageIndexes': [6, 7, 8],
     },
     {
       'subelement': '5.4 External Floors and Finishes',
       'options': ['C1 (Very Poor)', 'C2 (Poor)', 'C3 (Fair)', 'C4 (Good)', 'C5 (Excellent)'],
+      'imageIndexes': [9, 10, 11],
     },
     {
       'subelement': '5.5 External Ceiling and Ceiling Finishes',
       'options': ['C1 (Very Poor)', 'C2 (Poor)', 'C3 (Fair)', 'C4 (Good)', 'C5 (Excellent)'],
+      'imageIndexes': [12, 13, 14],
     },
-    // Add more questions here
+    
   ];
 
   void _checkAnswer() {
@@ -79,7 +96,6 @@ class _QuizPage2State extends State<QuizPage2> {
       setState(() {
         _currentQuestionIndex++;
         _textFieldController.clear();
-        _capturedImages = List.filled(3, null);
       });
     } else {
       // Quiz is finished
@@ -94,7 +110,7 @@ class _QuizPage2State extends State<QuizPage2> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignaturePage()),
+                    MaterialPageRoute(builder: (context) => SignaturePage(email: widget.email, displayName: widget.displayName)),
                   );
                 },
                 child: Text('OK'),
@@ -110,6 +126,8 @@ class _QuizPage2State extends State<QuizPage2> {
           );
         },
       );
+      final quizData = QuizData(subelement: _quizData[_currentQuestionIndex]['subelement'],selectedOption: _selectedOptions[_currentQuestionIndex], imageIndexes: _quizData[_currentQuestionIndex]['imageIndexes'],);
+      apiService.saveQuizDataToServer(quizData);
     }
   }
 
@@ -120,18 +138,17 @@ class _QuizPage2State extends State<QuizPage2> {
         _textFieldController.clear();
       });
     }
-    // Update selected options and captured images
+   
     _selectedOptions[_currentQuestionIndex + 1] = _selectedOptions[_currentQuestionIndex];
-    _capturedImages[_currentQuestionIndex + 1] = _capturedImages[_currentQuestionIndex];
   }
 
-  Future<void> _captureImage(int index) async {
+  Future<void> _captureImage(int questionIndex, int imageIndex) async {
     final picker = ImagePicker();
     final image = await picker.pickImage(source: ImageSource.camera);
 
     if (image != null) {
       setState(() {
-        _capturedImages[index] = File(image.path);
+        _capturedImages[questionIndex][imageIndex] = File(image.path);
       });
     }
   }
@@ -154,7 +171,7 @@ class _QuizPage2State extends State<QuizPage2> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inspection Checklist'),
+        title: Text('Inspection'),
         backgroundColor: Colors.green,
       ),
       body: SingleChildScrollView(
@@ -187,16 +204,17 @@ class _QuizPage2State extends State<QuizPage2> {
                 ),
                 const SizedBox(height: 16.0),
                 Row(
-                  children: [
-                    Expanded(
+                  children: List.generate(
+                    3,
+                    (index) => Expanded(
                       child: InkWell(
-                        onTap: () => _captureImage(0),
+                        onTap: () => _captureImage(_currentQuestionIndex, index),
                         child: Container(
                           width: 100.0,
                           height: 100.0,
                           color: Color.fromARGB(255, 202, 214, 208),
-                          child: _capturedImages[0] != null
-                              ? Image.file(_capturedImages[0]!)
+                          child: _capturedImages[_currentQuestionIndex][index] != null
+                              ? Image.file(_capturedImages[_currentQuestionIndex][index]!)
                               : const Center(
                                   child: Icon(
                                     Icons.camera_alt,
@@ -207,47 +225,7 @@ class _QuizPage2State extends State<QuizPage2> {
                         ),
                       ),
                     ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () => _captureImage(1),
-                        child: Container(
-                          width: 100.0,
-                          height: 100.0,
-                          color: Color.fromARGB(255, 202, 214, 208),
-                          child: _capturedImages[1] != null
-                              ? Image.file(_capturedImages[1]!)
-                              : const Center(
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    size: 50.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(width: 16.0),
-                    Expanded(
-                      child: InkWell(
-                        onTap: () => _captureImage(2),
-                        child: Container(
-                          width: 100.0,
-                          height: 100.0,
-                          color: Color.fromARGB(255, 202, 214, 208),
-                          child: _capturedImages[2] != null
-                              ? Image.file(_capturedImages[2]!)
-                              : const Center(
-                                  child: Icon(
-                                    Icons.camera_alt,
-                                    size: 50.0,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
                 const SizedBox(height: 16.0),
                 TextField(
@@ -305,3 +283,24 @@ class _QuizPage2State extends State<QuizPage2> {
     );
   }
 }
+
+class QuizData {
+  final String subelement;
+  final String? selectedOption;
+  final List<int> imageIndexes;
+
+  QuizData({
+    required this.subelement,
+    required this.selectedOption,
+    required this.imageIndexes,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'subelement': subelement,
+      'selectedOption': selectedOption,
+      'imageIndexes': imageIndexes,
+    };
+  }
+}
+

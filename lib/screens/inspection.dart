@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SignaturePage extends StatefulWidget {
+  final String email;
+  final String displayName;
+
+  SignaturePage({required this.email, required this.displayName});
+
   @override
   _SignaturePageState createState() => _SignaturePageState();
 }
@@ -61,8 +66,7 @@ class _SignaturePageState extends State<SignaturePage> {
   void _saveSignature() async {
     final signatureData = await _captureSignature();
     if (signatureData != null) {
-      // Save the signature data or perform any desired action
-      // You can use signatureData as an image or upload it to a server
+
       print('Signature saved!');
     }
   }
@@ -79,7 +83,8 @@ class _SignaturePageState extends State<SignaturePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              'Inspector name: Ean Bosman',
+              'Inspector name: ${widget.email}',
+              
               style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
             ),
             Text(
@@ -129,7 +134,7 @@ class _SignaturePageState extends State<SignaturePage> {
                 onPanEnd: (details) {
                   setState(() {
                     _isDrawing = false;
-                    _points.add(null); // Add null to indicate the end of drawing
+                    _points.add(null); 
                   });
                 },
                 child: Container(
@@ -167,7 +172,7 @@ class _SignaturePageState extends State<SignaturePage> {
 }
 
 class SignaturePainter extends CustomPainter {
-  final List<Offset?> points; // Update the list type to Offset?
+  final List<Offset?> points; 
 
   SignaturePainter({required this.points});
 

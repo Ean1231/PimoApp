@@ -6,7 +6,9 @@ import 'dart:convert' as convert;
 
 class LoginScreen extends StatefulWidget {
   Color customColor = Color(0xFF3CB371);
+
   LoginScreen({Key? key}) : super(key: key);
+
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -16,12 +18,21 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  bool isLoading = false;
 
   void authenticateUser() async {
+    setState(() {
+      isLoading = true;
+    });
+
     String email = emailController.text;
     String password = passwordController.text;
 
     var success = await APIService.authenticateUser(email, password);
+
+    setState(() {
+      isLoading = false;
+    });
 
     if (success) {
       // Authentication successful
@@ -33,7 +44,13 @@ class _LoginScreenState extends State<LoginScreen> {
       print('Login successful');
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => MyHomePage()),
+        MaterialPageRoute(
+          builder: (context) => MyHomePage(
+            email: email,
+            displayName: '',
+            manageID: 2,
+          ),
+        ),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -60,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             cajapurpura(size),
             personIcon(),
-            SingleChildScrollView( // Wrap loginForm with SingleChildScrollView
+            SingleChildScrollView(
               child: loginForm(context),
             ),
           ],
@@ -162,8 +179,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         autocorrect: false,
                         decoration: const InputDecoration(
                           enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Color.fromARGB(255, 52, 148, 44)),
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 52, 148, 44)),
                           ),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
@@ -199,13 +216,12 @@ class _LoginScreenState extends State<LoginScreen> {
                         autocorrect: false,
                         decoration: InputDecoration(
                           enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Color.fromARGB(255, 52, 148, 44)),
+                            borderSide: BorderSide(
+                                color: Color.fromARGB(255, 52, 148, 44)),
                           ),
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: Color.fromARGB(255, 52, 148, 44)
-                            ),
+                                color: Color.fromARGB(255, 52, 148, 44)),
                           ),
                           hintText: '*******',
                           labelText: 'Password',
@@ -224,19 +240,24 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 30),
+                      SizedBox(height: 50),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          MaterialButton(
-                            onPressed: () {
+                          ElevatedButton(
+                            onPressed: isLoading ? null : () {
                               if (widget._formKey.currentState!.validate()) {
                                 authenticateUser();
                               }
                             },
-                            child: Text('Login'),
-                            color: Color.fromARGB(255, 52, 148, 44),
-                            textColor: Color.fromARGB(255, 251, 252, 250),
+                            child: isLoading
+                                ? CircularProgressIndicator()
+                                : Text('Login'),
+                            style: ElevatedButton.styleFrom(
+                              primary: Color.fromARGB(255, 52, 148, 44),
+                              onPrimary: Color.fromARGB(255, 251, 252, 250),
+                              fixedSize: Size(200, 50),
+                            ),
                           ),
                         ],
                       ),

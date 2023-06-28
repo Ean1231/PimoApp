@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:pimoapp/screens/fieldInspection.dart';
+import 'package:pimoapp/screens/locationPage%20.dart';
 import 'package:pimoapp/screens/login_screen.dart';
 import 'package:pimoapp/screens/home_screen.dart';
 import 'package:pimoapp/screens/inspection.dart';
