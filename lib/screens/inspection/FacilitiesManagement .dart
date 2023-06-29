@@ -10,23 +10,27 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_signature_pad/flutter_signature_pad.dart';
 import 'package:pimoapp/screens/home_screen.dart';
 
-class InspectionForm extends StatefulWidget {
-  final String email;
-  final String displayName;
+class FacilitiesManagement  extends StatefulWidget {
+    final String email;
+    final String displayName;
     Position? currentPosition;
    String? currentAddress;
    String? currentDate;
    int manageID;
+   String? currentSuburb;
+   String? currentPostalCode;
+   String? currentMunicipality;
 
-  InspectionForm({required this.manageID ,required this.email, required this.displayName, this.currentPosition, this.currentAddress,required this.currentDate,});  
+
+  FacilitiesManagement ({required this.manageID ,required this.email, required this.displayName, this.currentPosition, this.currentAddress,required this.currentDate, required this. currentSuburb, required this. currentPostalCode, required this.currentMunicipality,});  
   
   
 
   @override
-  _InspectionFormState createState() => _InspectionFormState();
+  _FacilitiesManagementState createState() => _FacilitiesManagementState();
 }
 // Updated code 25th sunday 23-- from morning to 22:31
-class _InspectionFormState extends State<InspectionForm> {
+class _FacilitiesManagementState extends State<FacilitiesManagement > {
   
   List<String> inspectionElements = [
     '5.1 External Walls and Wall Finishes ',
@@ -106,6 +110,21 @@ final GlobalKey<ScaffoldMessengerState> _scaffoldKey = GlobalKey<ScaffoldMesseng
       );
     }
   }
+
+ String trimName() {
+    List<String> nameParts = widget.displayName.split(' ');
+  
+    if (nameParts.length < 2) {
+      return widget.displayName;
+    }
+  
+    String firstName = nameParts[0];
+    String lastName = nameParts[nameParts.length - 1];
+    String initials = firstName[0] + '.';
+  
+    return '$initials $lastName';
+  }
+
 
   Widget _buildRatingDropdown(int index) {
     return DropdownButtonFormField<String>(
@@ -270,12 +289,26 @@ pw.Widget _buildPdfContent() {
           ),
         ),  pw.Padding(padding: pw.EdgeInsets.only(bottom: 10.0)),
          pw.Text(
-          'Address: ${widget.currentAddress}',
+          'Address: ${widget.currentAddress} ${widget.currentPostalCode}',
           style: pw.TextStyle(
             fontSize: 16.0,
             fontWeight: pw.FontWeight.bold,
           ),
-        ),
+        ),pw.Padding(padding: pw.EdgeInsets.only(bottom: 10.0)), 
+         pw.Text(
+         'Local Minucipality:  ${widget.currentSuburb}',
+          style: pw.TextStyle(
+            fontSize: 16.0,
+            fontWeight: pw.FontWeight.bold,
+          ),
+        ),pw.Padding(padding: pw.EdgeInsets.only(bottom: 10.0)), 
+         pw.Text(
+          'Compiler Signature: ${trimName()}',
+          style: pw.TextStyle(
+            fontSize: 16.0,
+            fontWeight: pw.FontWeight.bold,
+          ),
+        ),pw.Padding(padding: pw.EdgeInsets.only(bottom: 10.0)),
         pw.Divider(thickness: 1.0, color: PdfColors.grey),
         pw.SizedBox(height: 10.0),
         ...elements,

@@ -15,7 +15,7 @@ class QuizPage2 extends StatefulWidget {
        Position? currentPosition;
   String? currentAddress;
   String currentDate = '';
-  QuizPage2({required this.manageID ,required this.email, required this.displayName, required this.currentPosition, required this.currentAddress,required this.currentDate});
+  QuizPage2({required this.manageID ,required this.email, required this.displayName, required this.currentPosition, required this.currentAddress,required this.currentDate, String? currentSuburb, String? currentPostalCode, String? currentMunicipality});
 
   @override
   _QuizPage2State createState() => _QuizPage2State();

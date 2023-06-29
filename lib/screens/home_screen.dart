@@ -8,9 +8,9 @@ import 'package:pimoapp/screens/userprofile.dart';
 import 'package:pimoapp/screens/checklist2.dart';
 import 'package:pimoapp/screens/login_screen.dart';
 import 'package:pimoapp/screens/google-maps.dart';
-import 'package:pimoapp/screens/fieldInspection.dart';
+import 'package:pimoapp/screens/inspection/buildings.dart';
 import 'package:weather_icons/weather_icons.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 
 class MyHomePage extends StatefulWidget {
   final String email;
@@ -335,7 +335,7 @@ subtitle: Row(
                         padding: EdgeInsets.only(top: 44.0, left: 8.0, right: 8.0, bottom: 8.0),
                         child: Text(
                           'Our commitment, your convenience. Truthful and trustworthy we are, that’s why we are best.',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
+                          style: TextStyle(fontSize: 16, color: Colors.white,  fontFamily: GoogleFonts.getFont('Quicksand').fontFamily),
                         ),
                       )
                     ],

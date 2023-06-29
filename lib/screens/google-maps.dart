@@ -69,55 +69,73 @@ class _MapState extends State<Map> {
     }
   }
 
-  void _showPopup(dynamic attributes, LatLng location) async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Point Details'),
-          content: FutureBuilder<String>(
-            future: getAddress(location),
-            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              if (snapshot.hasError) {
-                return Text('Error occurred while retrieving address');
-              }
-              if (snapshot.hasData) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Coordinates: ${location.latitude}, ${location.longitude}'),
-                    SizedBox(height: 8),
-                    Text('Address: ${snapshot.data}'),
-                    SizedBox(height: 8),
-                    Text('Attributes: ${attributes.toString()}'),
-                  ],
-                );
-              }
-              return Text('No data available');
+void _showPopup(dynamic attributes, LatLng location) async {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Point Details'),
+        content: FutureBuilder<String>(
+          future: getAddress(location),
+          builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return CircularProgressIndicator();
+            }
+            if (snapshot.hasError) {
+              return Text('Error occurred while retrieving address');
+            }
+            if (snapshot.hasData) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Coordinates: ${location.latitude}, ${location.longitude}'),
+                  SizedBox(height: 8),
+                  Text('Address: ${snapshot.data}'),
+                  SizedBox(height: 8),
+                  Text('Attributes:'),
+                  SizedBox(height: 8),
+                  DataTable(
+                    columns: <DataColumn>[
+                      DataColumn(label: Text('Attribute')),
+                      DataColumn(label: Text('Value')),
+                    ],
+                    rows: List<DataRow>.from(attributes.entries.map((entry) {
+                      return DataRow(
+                        cells: <DataCell>[
+                          DataCell(Text(entry.key.toString())),
+                          DataCell(Text(entry.value.toString())),
+                        ],
+                      );
+                    })),
+                  ),
+                ],
+              );
+            }
+            return Text('No data available');
+          },
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Close'),
+            onPressed: () {
+              Navigator.of(context).pop();
             },
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Directions'),
-              onPressed: () {
-                _launchDirections(location.latitude, location.longitude);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+          TextButton(
+            child: Text('Directions'),
+            onPressed: () {
+              _launchDirections(location.latitude, location.longitude);
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+
+
 
   Future<String> getAddress(LatLng location) async {
     final List<geocoding.Placemark> placemarks = await geocoding.placemarkFromCoordinates(
@@ -194,11 +212,11 @@ class _MapState extends State<Map> {
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: Column(
-          children: [
+        children: [
             Expanded(
-              child: FlutterMap(
-  options: MapOptions(
-    center: _currentPosition != null
+        child: FlutterMap(
+        options: MapOptions(
+        center: _currentPosition != null
         ? LatLng(_currentPosition!.latitude, _currentPosition!.longitude)
         : LatLng(-32.98597016673679, 27.90755303092124),
     zoom: 13.0,
